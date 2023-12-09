@@ -1,0 +1,131 @@
+API thêm lượt thích cho nhà hàng (POST /api/like)
+function likeRestaurant(req, res) {
+  const { user_id, res_id } = req.body;
+
+  LikeRes.create({
+    user_id,
+    res_id,
+    date_like: new Date(),
+  })
+    .then((like) => {
+      res.json(like);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Loi' });
+    });
+}
+
+===================================================
+API hủy lượt thích cho nhà hàng (POST /api/unlike):
+function unlikeRestaurant(req, res) {
+  const { user_id, res_id } = req.body;
+
+  LikeRes.destroy({
+    where: {
+      user_id,
+      res_id,
+    },
+  })
+    .then(() => {
+      res.json({ success: true });
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Loi' });
+    });
+}
+
+=======================================================
+API lấy danh sách người dùng thích nhà hàng theo res_id (GET /api/likes/restaurant/:res_id)
+function getLikesByRestaurant(req, res) {
+  const { res_id } = req.params;
+
+  LikeRes.findAll({
+    where: {
+      res_id,
+    },
+    include: [User],
+  })
+    .then((likes) => {
+      res.json(likes);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Loi' });
+    });
+}
+
+======================================================
+API lấy danh sách nhà hàng được người dùng thích theo user_id (GET /api/likes/user/:user_id)
+function getLikesByUser(req, res) {
+  const { user_id } = req.params;
+
+  LikeRes.findAll({
+    where: {
+      user_id,
+    },
+  })
+    .then((likes) => {
+      res.json(likes);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Loi' });
+    });
+}
+=======================================================
+API thêm đánh giá cho nhà hàng (POST /api/addrating)
+function addRestaurantRating(req, res) {
+  const { user_id, res_id, rating, comment } = req.body;
+
+  RatingRes.create({
+    user_id,
+    res_id,
+    rating,
+    comment,
+  })
+    .then((newRating) => {
+      res.json(newRating);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Loi' });
+    });
+}
+=======================================================
+API lấy danh sách đánh giá theo nhà hàng (GET /api/ratings/restaurant/:res_id)
+function getRatingsByRestaurant(req, res) {
+  const { res_id } = req.params;
+
+  RatingRes.findAll({
+    where: {
+      res_id,
+    },
+  })
+    .then((ratings) => {
+      res.json(ratings);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    });
+}
+=======================================================
+API lấy danh sách đánh giá theo người dùng (GET /api/ratings/user/:user_id)
+function getRatingsByUser(req, res) {
+  const { user_id } = req.params;
+
+  RatingRes.findAll({
+    where: {
+      user_id,
+    },
+  })
+    .then((ratings) => {
+      res.json(ratings);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({ error: 'Loi' });
+    });
+}
